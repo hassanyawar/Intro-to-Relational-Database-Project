@@ -2,7 +2,7 @@
 This is the final course project for Intro to Relational Database
 
 Requirements to run the project:
-- Download the files from repo titled: tournament.py, tournament_test.py, tournament.sql.
+- Download the files from repo: tournament.py, tournament_test.py, tournament.sql.
 - Download and install Vagrant from this link https://www.vagrantup.com/, if you haven't done it yet.
 - Download and install VirtualBox from this link https://www.virtualbox.org/wiki/Downloads, if you haven't done it yet.
 - Unzip the FSND-Virtual-Machine.zip to find 'vagrant' folder inside it.
