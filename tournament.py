@@ -14,6 +14,7 @@ def connect(database_name = "tournament"):
         return db, cursor
     except:
         print("Unable to connect to {}".format(database_name))
+    #-----Done-----#
 
 
 def deleteMatches():
@@ -84,7 +85,7 @@ def playerStandings():
         matches: the number of matches the player has played
     """
     conn, cur = connect()
-    
+
     cur.execute('''SELECT p.id, p.name,
                  (SELECT COUNT(*) FROM matches m1 WHERE p.id = m1.winner) AS wins,
                  (SELECT COUNT(*) FROM matches m2 WHERE p.id = m2.winner OR p.id = m2.loser) AS total_matches
