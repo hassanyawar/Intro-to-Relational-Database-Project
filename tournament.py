@@ -86,14 +86,30 @@ def playerStandings():
     """
     conn, cur = connect()
 
-    cur.execute('''SELECT p.id, p.name,
-                 (SELECT COUNT(*) FROM matches m1 WHERE p.id = m1.winner) AS wins,
-                 (SELECT COUNT(*) FROM matches m2 WHERE p.id = m2.winner OR p.id = m2.loser) AS total_matches
-                 FROM players AS p
-                 ORDER BY wins DESC;''')
+    cur.execute('''CREATE OR REPLACE VIEW match_wins AS
+                   SELECT p.id, p.name, COUNT(m.winner) AS wins
+                   FROM players AS p LEFT JOIN matches AS m ON p.id = m.winner
+                   GROUP BY p.id
+                   ORDER BY wins DESC;''')
+    
+    cur.execute('''CREATE OR REPLACE VIEW match_losses AS
+                   SELECT p.id, p.name, COUNT(m.loser) AS losses
+                   FROM players AS p LEFT JOIN matches AS m ON p.id = m.loser
+                   GROUP BY p.id
+                   ORDER BY losses DESC;''')
+    
+    cur.execute('''CREATE OR REPLACE VIEW total_wins_matches AS
+                   SELECT mw.id, mw.name, mw.wins, (mw.wins + ml.losses) AS total_matches
+                   FROM match_wins AS mw, match_losses AS ml
+                   WHERE mw.id = ml.id
+                   ORDER BY mw.wins DESC;''')
+    
+    cur.execute("SELECT * FROM total_wins_matches;")
 
     standings = cur.fetchall()
     
+    cur.execute("DROP VIEW match_wins, match_losses, total_wins_matches");
+
     conn.close()
     
     return standings
